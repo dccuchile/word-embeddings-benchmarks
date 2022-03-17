@@ -4,7 +4,7 @@
  Functions for fetching categorization datasets
 """
 
-from sklearn.datasets.base import Bunch
+from sklearn.utils import Bunch
 from .utils import _get_cluster_assignments
 
 
