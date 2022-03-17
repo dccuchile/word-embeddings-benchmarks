@@ -22,7 +22,7 @@ import zipfile
 import glob
 import pandas as pd
 from tqdm import tqdm
-from sklearn.datasets.base import Bunch
+from sklearn.utils import Bunch
 from .._utils.compat import _basestring, cPickle, _urllib, md5_hash
 
 
