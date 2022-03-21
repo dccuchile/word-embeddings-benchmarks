@@ -24,8 +24,8 @@ import pandas as pd
 from tqdm import tqdm
 from sklearn.utils import Bunch
 from .._utils.compat import _basestring, cPickle, _urllib, md5_hash
-
-
+from urllib.error import HTTPError
+import urllib.request
 TEMP = tempfile.gettempdir()
 
 
@@ -603,8 +603,8 @@ def _fetch_file(url, data_dir=TEMP, uncompress=False, move=False,md5sum=None,
 
         try:
             # Download data
-            url_opener = _urllib.request.build_opener(*handlers)
-            request = _urllib.request.Request(url)
+            url_opener = urllib.request.build_opener(*handlers)
+            request = urllib.request.Request(url)
             request.add_header('Connection', 'Keep-Alive')
             if username is not None and password is not None:
                 if not url.startswith('https'):
@@ -656,7 +656,7 @@ def _fetch_file(url, data_dir=TEMP, uncompress=False, move=False,md5sum=None,
             dt = time.time() - t0
             if verbose > 0:
                 print('...done. (%i seconds, %i min)' % (dt, dt // 60))
-        except _urllib.error.HTTPError as e:
+        except HTTPError as e:
             if verbose > 0:
                 print('Error while fetching file %s. Dataset fetching aborted.' %
                       (file_name))
