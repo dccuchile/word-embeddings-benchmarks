@@ -85,7 +85,7 @@ def evaluate_categorization(w, X, y, method="all", seed=None):
     assert method in ["all", "kmeans", "agglomerative"], "Uncrecognized method"
 
     mean_vector = np.mean(w.vectors, axis=0, keepdims=True)
-    words = np.vstack(w.get(word, mean_vector) for word in X.flatten())
+    words = np.vstack(list(w.get(word, mean_vector) for word in X.flatten()))
     ids = np.random.RandomState(seed).choice(range(len(X)), len(X), replace=False)
 
     # Evaluate clustering on several hyperparameters of AgglomerativeClustering and
@@ -140,12 +140,12 @@ def evaluate_on_semeval_2012_2(w):
     for c in categories:
         # Get mean of left and right vector
         prototypes = data.X_prot[c]
-        prot_left = np.mean(np.vstack(w.get(word, mean_vector) for word in prototypes[:, 0]), axis=0)
-        prot_right = np.mean(np.vstack(w.get(word, mean_vector) for word in prototypes[:, 1]), axis=0)
+        prot_left = np.mean(np.vstack(list(w.get(word, mean_vector) for word in prototypes[:, 0])), axis=0)
+        prot_right = np.mean(np.vstack(list(w.get(word, mean_vector) for word in prototypes[:, 1])), axis=0)
 
         questions = data.X[c]
-        question_left, question_right = np.vstack(w.get(word, mean_vector) for word in questions[:, 0]), \
-                                        np.vstack(w.get(word, mean_vector) for word in questions[:, 1])
+        question_left, question_right = np.vstack(list(w.get(word, mean_vector) for word in questions[:, 0])), \
+                                        np.vstack(list(w.get(word, mean_vector) for word in questions[:, 1]))
 
         scores = np.dot(prot_left - prot_right, (question_left - question_right).T)
 
@@ -333,8 +333,8 @@ def evaluate_similarity(w, X, y):
 
 
     mean_vector = np.mean(w.vectors, axis=0, keepdims=True)
-    A = np.vstack(w.get(word, mean_vector) for word in X[:, 0])
-    B = np.vstack(w.get(word, mean_vector) for word in X[:, 1])
+    A = np.vstack(list(w.get(word, mean_vector) for word in X[:, 0]))
+    B = np.vstack(list(w.get(word, mean_vector) for word in X[:, 1]))
     scores = np.array([v1.dot(v2.T)/(np.linalg.norm(v1)*np.linalg.norm(v2)) for v1, v2 in zip(A, B)])
     return scipy.stats.spearmanr(scores, y).correlation
 
